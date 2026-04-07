@@ -24,7 +24,7 @@ def extract_inbody():
         data = request.get_json()
         img_b64 = data.get('image')
 
-        from google import genai
+        import google.generativeai as genai
         from PIL import Image
 
         img_bytes = base64.b64decode(img_b64.split(',')[-1])
@@ -32,7 +32,8 @@ def extract_inbody():
         if img.mode in ("RGBA", "P"):
             img = img.convert("RGB")
 
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        genai.configure(api_key=GEMINI_API_KEY)
+        model = genai.GenerativeModel("gemini-1.5-flash")
         prompt = """이 인바디 결과지 이미지에서 수치를 추출해주세요.
 반드시 아래 JSON 형식으로만 답하세요. 없는 항목은 null로 표시하세요.
 
@@ -50,10 +51,7 @@ def extract_inbody():
 
 JSON 외에 다른 텍스트는 절대 포함하지 마세요."""
 
-        response = client.models.generate_content(
-            model="gemini-1.5-flash",
-            contents=[prompt, img]
-        )
+        response = model.generate_content([prompt, img])
         text = response.text.strip()
         text = re.sub(r'```json\s*', '', text)
         text = re.sub(r'```\s*', '', text).strip()
