@@ -24,7 +24,7 @@ def extract_inbody():
         data = request.get_json()
         img_b64 = data.get('image')
 
-        import google.generativeai as genai
+        import requests as req
         from PIL import Image
 
         img_bytes = base64.b64decode(img_b64.split(',')[-1])
@@ -32,8 +32,11 @@ def extract_inbody():
         if img.mode in ("RGBA", "P"):
             img = img.convert("RGB")
 
-        genai.configure(api_key=GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        # 이미지를 JPEG base64로 재인코딩
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=85)
+        img_b64_clean = base64.b64encode(buf.getvalue()).decode()
+
         prompt = """이 인바디 결과지 이미지에서 수치를 추출해주세요.
 반드시 아래 JSON 형식으로만 답하세요. 없는 항목은 null로 표시하세요.
 
@@ -51,8 +54,19 @@ def extract_inbody():
 
 JSON 외에 다른 텍스트는 절대 포함하지 마세요."""
 
-        response = model.generate_content([prompt, img])
-        text = response.text.strip()
+        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+        payload = {
+            "contents": [{
+                "parts": [
+                    {"text": prompt},
+                    {"inline_data": {"mime_type": "image/jpeg", "data": img_b64_clean}}
+                ]
+            }]
+        }
+        resp = req.post(url, json=payload, timeout=30)
+        resp.raise_for_status()
+        response_json = resp.json()
+        text = response_json["candidates"][0]["content"]["parts"][0]["text"].strip()
         text = re.sub(r'```json\s*', '', text)
         text = re.sub(r'```\s*', '', text).strip()
         json_match = re.search(r'\{.*\}', text, re.DOTALL)
