@@ -61,7 +61,8 @@ JSON 외에 다른 텍스트는 절대 포함하지 마세요."""
                     {"text": prompt},
                     {"inline_data": {"mime_type": "image/jpeg", "data": img_b64_clean}}
                 ]
-            }]
+            }],
+            "generationConfig": {"thinkingConfig": {"thinkingBudget": 0}}
         }
         resp = req.post(url, json=payload, timeout=30)
         resp.raise_for_status()
