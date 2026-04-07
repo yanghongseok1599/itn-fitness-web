@@ -54,7 +54,7 @@ def extract_inbody():
 
 JSON 외에 다른 텍스트는 절대 포함하지 마세요."""
 
-        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent?key={GEMINI_API_KEY}"
         payload = {
             "contents": [{
                 "parts": [
