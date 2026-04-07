@@ -10,7 +10,7 @@ from pdf_generator import generate_routine_pdf
 
 app = Flask(__name__, template_folder='../templates')
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyCWaQYECltE0DOOevLiY3vkiU__Pc8so7M")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
 @app.route('/')
 def index():
