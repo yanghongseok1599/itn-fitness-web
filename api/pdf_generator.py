@@ -31,31 +31,47 @@ def _calc(member, inbody, goal):
     bmr       = _safe_int(inbody.get('bmr'), 1380)
     age       = _safe_int(member.get('age'), 35)
 
-    tdee = round(bmr * 1.4)
+    # 활동계수: 주 5회 운동 기준 1.55 (moderately active)
+    activity_factor = 1.55
+    tdee = round(bmr * activity_factor)
     max_hr = 220 - age
     fat_burn_lo = round(max_hr * 0.60)
     fat_burn_hi = round(max_hr * 0.70)
     cardio_lo   = round(max_hr * 0.65)
     cardio_hi   = round(max_hr * 0.75)
 
-    calorie_targets = {
-        '체지방감소': round(tdee * 0.85),
-        '근육증가':   round(tdee * 1.15),
-        '체력향상':   tdee,
-        '체형교정':   round(tdee * 0.95),
+    # 목표별 칼로리 조정
+    deficit_map = {
+        '체지방감소': -500,   # -500kcal/day → 주 ~0.45kg 감량
+        '근육증가':   +300,   # +300kcal/day 벌크업
+        '체력향상':     0,    # 유지
+        '체형교정':  -250,    # 소폭 적자
     }
-    calorie_target = calorie_targets.get(goal, calorie_targets['체지방감소'])
+    daily_delta = deficit_map.get(goal, -500)
+    calorie_target = max(round(tdee + daily_delta), 1200)
 
-    macro = {
-        '체지방감소': (40, 35, 25),
-        '근육증가':   (35, 45, 20),
-        '체력향상':   (30, 50, 20),
-        '체형교정':   (30, 50, 20),
-    }.get(goal, (40, 35, 25))
-    p_pct, c_pct, f_pct = macro
-    protein_g = round(calorie_target * p_pct / 100 / 4)
-    carb_g    = round(calorie_target * c_pct / 100 / 4)
-    fat_g     = round(calorie_target * f_pct / 100 / 9)
+    # 단백질: 체중 기반 (체지방감소 2.0g/kg, 근육증가 2.2g/kg, 기타 1.8g/kg)
+    protein_per_kg = {'체지방감소': 2.0, '근육증가': 2.2}.get(goal, 1.8)
+    protein_g = round(weight * protein_per_kg)
+    protein_kcal = protein_g * 4
+
+    # 지방: 체중 기반 (1.0g/kg, 최소 40g)
+    fat_g = max(round(weight * 1.0), 40)
+    fat_kcal = fat_g * 9
+
+    # 탄수화물: 나머지 칼로리
+    carb_kcal = max(calorie_target - protein_kcal - fat_kcal, 0)
+    carb_g = round(carb_kcal / 4)
+
+    # 실제 비율 역산 (표시용)
+    total_kcal = protein_kcal + fat_kcal + carb_kcal
+    p_pct = round(protein_kcal / total_kcal * 100) if total_kcal > 0 else 0
+    f_pct = round(fat_kcal    / total_kcal * 100) if total_kcal > 0 else 0
+    c_pct = 100 - p_pct - f_pct
+
+    # 주간 예상 체지방 감량 (7,700kcal = 1kg 지방)
+    weekly_deficit = daily_delta * 7
+    weekly_fat_loss = round(abs(weekly_deficit) / 7700, 2) if daily_delta < 0 else 0.0
 
     water_l = round(weight * 0.033 + 0.5, 1)
 
@@ -111,6 +127,7 @@ def _calc(member, inbody, goal):
         'calorie_target': calorie_target, 'protein_g': protein_g,
         'carb_g': carb_g, 'fat_g': fat_g,
         'p_pct': p_pct, 'c_pct': c_pct, 'f_pct': f_pct,
+        'daily_delta': daily_delta, 'weekly_fat_loss': weekly_fat_loss,
         'water_l': water_l,
         'rep_range': rep_range, 'core_reps': core_reps,
         'rm_range': rm_range, 'rest': intensity['rest'], 'sets': intensity['sets'],
@@ -133,17 +150,28 @@ def _css():
       font-size: 10pt; color: #2a2a2a; background: white; line-height: 1.6;
     }
     .page {
-      width: 100%; page-break-after: always;
-      min-height: 247mm; display: flex; flex-direction: column;
+      width: 100%; page-break-after: always; break-after: page;
+      display: flex; flex-direction: column;
       padding: 0;
     }
-    .page:last-child { page-break-after: avoid; }
+    .page:last-child { page-break-after: avoid; break-after: avoid; }
+    /* 인쇄: 정확히 A4 1장씩 */
+    @media print {
+      body { margin: 0; padding: 0; background: white; }
+      .page {
+        /* A4 297mm - 상단14mm - 하단16mm = 267mm */
+        height: 267mm;
+        overflow: hidden;
+        padding: 0;
+      }
+    }
     /* 브라우저 미리보기용 여백 */
     @media screen {
       body { background: #e8eaed; padding: 10mm; }
       .page {
         background: white; margin-bottom: 8mm;
         padding: 14mm 16mm 16mm 16mm;
+        min-height: 267mm;
         box-shadow: 0 2px 12px rgba(0,0,0,0.15);
         border-radius: 2px;
       }
@@ -952,6 +980,14 @@ def _page7(c, member):
 <div class="page">
   {_page_header('7', '맞춤 식단 계획', name)}
   <div class="sec">하루 칼로리 & 영양소 목표</div>
+
+  <div style="background:#f0f4f8;border-radius:6px;padding:7px 12px;margin-bottom:8px;font-size:8.5pt;color:#2a2a2a;line-height:1.8">
+    <strong>칼로리 계산 근거</strong> &nbsp;|&nbsp;
+    기초대사량(BMR) <strong>{c['bmr']}kcal</strong>
+    × 활동계수 1.55 (주 5회 운동)
+    = TDEE <strong>{c['tdee']}kcal</strong>
+    {'&nbsp;→&nbsp;일일 <strong style="color:#c0603a">-' + str(abs(c['daily_delta'])) + 'kcal</strong> 적자 &nbsp;→&nbsp; 주간 예상 감량 <strong style="color:#c0603a">' + str(c['weekly_fat_loss']) + 'kg/주</strong>' if c['daily_delta'] < 0 else ('&nbsp;→&nbsp;일일 <strong style="color:#2a7a3b">+' + str(c['daily_delta']) + 'kcal</strong> 잉여 (벌크업)') if c['daily_delta'] > 0 else '&nbsp;→&nbsp;<strong>유지 칼로리</strong>'}
+  </div>
 
   <div class="metric-row">
     <div class="metric orange" style="flex:2">

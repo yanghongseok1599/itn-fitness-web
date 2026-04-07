@@ -17,6 +17,12 @@ def index():
     with open(html_path, 'r', encoding='utf-8') as f:
         return Response(f.read(), mimetype='text/html')
 
+@app.route('/og-image.png')
+def og_image():
+    img_path = os.path.join(os.path.dirname(__file__), 'og-image.png')
+    with open(img_path, 'rb') as f:
+        return Response(f.read(), mimetype='image/png')
+
 @app.route('/api/extract', methods=['POST'])
 def extract_inbody():
     try:
