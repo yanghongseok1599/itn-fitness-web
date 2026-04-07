@@ -87,7 +87,8 @@ def render():
         data = request.get_json()
         member = data.get('member', {})
         inbody = data.get('inbody', {})
-        html = build_html(member, inbody)
+        goal = data.get('goal', '체지방감소')
+        html = build_html(member, inbody, goal)
         return Response(html, mimetype='text/html')
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
