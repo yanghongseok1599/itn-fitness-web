@@ -51,7 +51,7 @@ def extract_inbody():
 JSON 외에 다른 텍스트는 절대 포함하지 마세요."""
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-1.5-flash",
             contents=[prompt, img]
         )
         text = response.text.strip()
