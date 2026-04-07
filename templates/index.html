@@ -229,8 +229,7 @@
     </div>
     <div class="card-body">
       <div class="btn-row">
-        <button class="btn btn-outline" id="previewBtn">👁 미리보기</button>
-        <button class="btn btn-secondary" id="downloadBtn">⬇️ PDF 다운로드</button>
+        <button class="btn btn-secondary" id="downloadBtn">🖨️ PDF 출력 / 저장</button>
       </div>
       <div class="status" id="pdfStatus"></div>
       <div id="pdfPreviewArea" style="margin-top:16px;display:none">
@@ -249,7 +248,7 @@
   const changeBtn = document.getElementById('changeBtn');
   const extractBtn = document.getElementById('extractBtn');
   const extractStatus = document.getElementById('extractStatus');
-  const previewBtn = document.getElementById('previewBtn');
+  const previewBtn = null;
   const downloadBtn = document.getElementById('downloadBtn');
   const pdfStatus = document.getElementById('pdfStatus');
 
@@ -346,66 +345,33 @@
     return data;
   }
 
-  // 미리보기
-  previewBtn.addEventListener('click', async () => {
+  async function openPrintWindow() {
     pdfStatus.className = 'status loading-dots';
-    pdfStatus.textContent = 'PDF 생성 중';
-    document.getElementById('pdfPreviewArea').style.display = 'none';
+    pdfStatus.textContent = '루틴 생성 중';
 
     try {
-      const res = await fetch('/api/preview_pdf', {
+      const res = await fetch('/api/render', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ member: getMemberData(), inbody: getInbodyData() })
       });
-      const json = await res.json();
-      if (!json.success) throw new Error(json.error);
+      if (!res.ok) throw new Error(await res.text());
+      const html = await res.text();
 
-      const iframe = document.getElementById('pdfFrame');
-      iframe.src = 'data:application/pdf;base64,' + json.pdf;
-      document.getElementById('pdfPreviewArea').style.display = 'block';
+      const win = window.open('', '_blank');
+      win.document.write(html);
+      win.document.close();
+      win.onload = () => win.print();
+
       pdfStatus.className = 'status success';
-      pdfStatus.textContent = '✅ 미리보기 생성 완료';
+      pdfStatus.textContent = '✅ 새 탭에서 인쇄 창이 열립니다. "PDF로 저장"을 선택하세요.';
     } catch (err) {
       pdfStatus.className = 'status error';
       pdfStatus.textContent = '❌ 오류: ' + err.message;
     }
-  });
+  }
 
-  // 다운로드
-  downloadBtn.addEventListener('click', async () => {
-    pdfStatus.className = 'status loading-dots';
-    pdfStatus.textContent = 'PDF 다운로드 준비 중';
-
-    try {
-      const res = await fetch('/api/generate_pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ member: getMemberData(), inbody: getInbodyData() })
-      });
-
-      if (!res.ok) {
-        const json = await res.json();
-        throw new Error(json.error);
-      }
-
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      const name = document.getElementById('name').value || '회원';
-      const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
-      a.href = url;
-      a.download = `ITN_${name}_운동루틴_${today}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
-
-      pdfStatus.className = 'status success';
-      pdfStatus.textContent = '✅ PDF 다운로드 완료!';
-    } catch (err) {
-      pdfStatus.className = 'status error';
-      pdfStatus.textContent = '❌ 오류: ' + err.message;
-    }
-  });
+  downloadBtn.addEventListener('click', openPrintWindow);
 </script>
 </body>
 </html>

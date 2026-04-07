@@ -1,12 +1,11 @@
 """
 ITN 피트니스 — Vercel 배포용 Flask 앱
 """
-from flask import Flask, request, jsonify, send_file, Response
+from flask import Flask, request, jsonify, Response
 import base64, json, io, re, os, sys
-from datetime import date
 
 sys.path.insert(0, os.path.dirname(__file__))
-from pdf_generator import generate_routine_pdf
+from pdf_generator import build_html
 
 app = Flask(__name__, template_folder='../templates')
 
@@ -32,7 +31,6 @@ def extract_inbody():
         if img.mode in ("RGBA", "P"):
             img = img.convert("RGB")
 
-        # 이미지를 JPEG base64로 재인코딩
         buf = io.BytesIO()
         img.save(buf, format="JPEG", quality=85)
         img_b64_clean = base64.b64encode(buf.getvalue()).decode()
@@ -82,40 +80,16 @@ JSON 외에 다른 텍스트는 절대 포함하지 마세요."""
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
-@app.route('/api/generate_pdf', methods=['POST'])
-def generate_pdf():
+@app.route('/api/render', methods=['POST'])
+def render():
+    """브라우저 인쇄용 HTML 반환 — WeasyPrint 불필요"""
     try:
         data = request.get_json()
         member = data.get('member', {})
         inbody = data.get('inbody', {})
-
-        pdf_bytes = generate_routine_pdf(member, inbody)
-
-        name = member.get('name', '회원')
-        today = date.today().strftime('%Y%m%d')
-        filename = f"ITN_{name}_운동루틴_{today}.pdf"
-
-        return send_file(
-            io.BytesIO(pdf_bytes),
-            mimetype='application/pdf',
-            as_attachment=True,
-            download_name=filename
-        )
+        html = build_html(member, inbody)
+        return Response(html, mimetype='text/html')
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
-
-@app.route('/api/preview_pdf', methods=['POST'])
-def preview_pdf():
-    try:
-        data = request.get_json()
-        member = data.get('member', {})
-        inbody = data.get('inbody', {})
-
-        pdf_bytes = generate_routine_pdf(member, inbody)
-        pdf_b64 = base64.b64encode(pdf_bytes).decode()
-
-        return jsonify({'success': True, 'pdf': pdf_b64})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
 
 app = app
