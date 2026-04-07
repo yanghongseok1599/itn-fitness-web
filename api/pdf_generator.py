@@ -407,9 +407,9 @@ def _page1(c, member, inbody):
       <tr><td><span class="day-badge">화</span></td><td style="font-weight:700;color:#1e4d7b">상체+코어</td>
         <td style="font-size:7pt">무동력트레드밀 8분 → 시티드체스트프레스 · 랫풀다운 · 시티드로우 · 숄더프레스 · 팩덱플라이 → 토르소 · 크로스케이블 · 하이퍼익스텐션</td>
         <td style="font-size:7pt;color:#c0603a;font-weight:600">스키머신 20분</td></tr>
-      <tr><td><span class="day-badge rest">수</span></td><td style="color:#6a7a88">완전 휴식</td>
-        <td style="font-size:7pt;color:#7a8888">가벼운 스트레칭 (선택사항)</td>
-        <td style="font-size:7pt;color:#9a9888">—</td></tr>
+      <tr><td><span class="day-badge" style="background:#9a6208">수</span></td><td style="font-weight:700;color:#9a6208">코어+유산소</td>
+        <td style="font-size:7pt">에코바이크 10분 → 토르소 · AB스윙 · 크로스케이블 · 업도미널 · 하이퍼익스텐션 · 레그레이즈 → 플랭크 3세트</td>
+        <td style="font-size:7pt;color:#c0603a;font-weight:600">스키머신 or 인클라인워킹 25분</td></tr>
       <tr><td><span class="day-badge">목</span></td><td style="font-weight:700;color:#1e4d7b">하체+코어</td>
         <td style="font-size:7pt">에코바이크 10분 → 브이스쿼트 · 버티컬레그프레스 · 몬스터글루트 · 레그컬 · 덩키킥 → 업도미널 · AB스윙</td>
         <td style="font-size:7pt;color:#c0603a;font-weight:600">천국의 계단 15분</td></tr>
@@ -674,6 +674,91 @@ def _page4(c, member):
     <strong>화요일</strong> — 시티드(앉아서) 중심 머신 운동 · 시티드체스트프레스(가슴 전면) + 랫풀다운(광배근) + 시티드로우(중간 등) 패턴<br>
     <strong>금요일</strong> — 인클라인(상부 가슴) + 와이드풀다운(광배근 넓이) + 로우로우·티바로우(등 두께) + 레터럴레이즈(어깨 측면) 패턴<br>
     가슴·등·어깨를 번갈아 자극해 상체 균형을 잡습니다.
+  </div>
+
+  {_page_footer(c['today_str'])}
+</div>"""
+
+
+# ═══════════════════════════════════════════════════════════
+# PAGE 4-B — 수요일 코어+유산소 상세
+# ═══════════════════════════════════════════════════════════
+def _page4b(c, member):
+    name = member.get('name', '회원')
+    cr = c['core_reps']
+
+    wed_exs = [
+        ('cat-warmup', '워밍업',  '에코바이크',        '10분',              '싸이클 · 런닝머신'),
+        ('cat-core',   '코어★',   '토르소',             f'3 × {cr}(좌우)',   'AB스윙 · 크로스케이블'),
+        ('cat-core',   '코어★',   'AB스윙',             f'3 × {cr}',         '토르소 · 크로스케이블'),
+        ('cat-core',   '코어★',   '크로스케이블',       f'3 × 15회(좌우)',   '토르소 · 듀얼풀리'),
+        ('cat-core',   '코어',    '업도미널',            f'3 × {cr}',         '행잉 니레이즈'),
+        ('cat-core',   '코어',    '레그레이즈',          f'3 × 15회',         '힙플렉서 · 업도미널'),
+        ('cat-core',   '허리안정', '하이퍼익스텐션',    '2 × 15회',          '백익스텐션'),
+        ('cat-core',   '전신코어', '플랭크',             '3 × 40초',          '사이드플랭크'),
+        ('cat-finish', '마무리',  '스키머신 or 인클라인워킹', '25분',          '엘립티컬 · 천국의 계단'),
+    ]
+
+    def ex_card(cat_cls, cat, nm, detail, alt):
+        return f"""<div class="ex-card">
+      <span class="ex-cat {cat_cls}">{cat}</span>
+      <div style="flex:1">
+        <div class="ex-name">{nm}</div>
+        <div class="ex-detail">{detail}</div>
+        <div class="ex-alt">대체: {alt}</div>
+      </div>
+    </div>"""
+
+    cards = ''.join(ex_card(*e) for e in wed_exs)
+
+    return f"""
+<div class="page">
+  {_page_header('4-B', '수요일 코어+유산소 상세', name)}
+
+  <div class="main-header">
+    <div>
+      <div class="mh-gym">ITN 피트니스 · 동해 · Body Alignment Specialist</div>
+      <div class="mh-title">수요일 — <span>코어 집중 + 유산소</span></div>
+      <div class="mh-sub">복부·옆구리 직접 공략 · 코어 전체 + 지방 연소 유산소</div>
+    </div>
+  </div>
+
+  <div class="pbox">
+    <strong>💡 수요일 포인트</strong> — 월·화 웨이트 후 근육 회복을 유지하면서 코어와 유산소로 지방 연소를 이어갑니다.
+    토르소·AB스윙·크로스케이블 <strong>3종 세트</strong>는 복부·옆구리 지방 공략의 핵심입니다.
+    무게 없이도 제대로 하면 충분히 자극이 옵니다. 호흡에 집중하며 천천히 수행하세요.
+  </div>
+
+  <div class="sec">🔥 수요일 운동 구성</div>
+  <div class="ex-col-wrap">
+    <div class="ex-col">
+      <div class="ex-col-head">수요일 — 코어 + 유산소</div>
+      {cards}
+    </div>
+    <div class="ex-col" style="max-width:44%">
+      <div class="ex-col-head">코어 운동 핵심 포인트</div>
+      <div style="padding:4mm;font-size:8.5pt;line-height:1.8;border:0.6pt solid #e2ded8;border-top:none">
+        <div style="margin-bottom:3mm"><strong style="color:#c0603a">토르소·AB스윙</strong><br>
+        허리 반동 ❌ · 복부와 옆구리로만 회전<br>끝점에서 1초 멈추며 수축 느끼기</div>
+        <div style="margin-bottom:3mm"><strong style="color:#c0603a">크로스케이블</strong><br>
+        팔꿈치 고정 · 대각선으로 당길 때 옆구리 수축<br>양쪽 동일한 횟수 유지</div>
+        <div style="margin-bottom:3mm"><strong style="color:#1e4d7b">업도미널·레그레이즈</strong><br>
+        허리가 바닥에서 뜨지 않게 유지<br>올릴 때 내쉬고, 내릴 때 들이쉬기</div>
+        <div style="margin-bottom:3mm"><strong style="color:#1e4d7b">플랭크</strong><br>
+        몸통이 일직선 · 엉덩이 들리거나 내려앉지 않게<br>40초가 힘들면 20초 × 2세트로 분할</div>
+        <div style="background:#fdf6ec;border-left:3pt solid #d4900a;padding:3mm;border-radius:0 4pt 4pt 0;font-size:8pt">
+          <strong style="color:#9a6208">유산소 타이밍</strong> — 코어 운동 완료 후 유산소.
+          지방 연소는 12분 이후 본격 시작되므로 25분 이상 유지하세요.
+          심박수 목표: <strong>{c['fat_burn_lo']}~{c['fat_burn_hi']}bpm</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="green-box">
+    <strong>✅ 수요일 목표 칼로리 소모</strong> —
+    코어 운동 약 <strong>80kcal</strong> + 유산소 25분 약 <strong>180kcal</strong> = 총 약 <strong>260kcal</strong> 소모.
+    월·화 웨이트 후 회복하면서도 꾸준히 지방을 줄이는 가장 효율적인 방법입니다.
   </div>
 
   {_page_footer(c['today_str'])}
@@ -1346,6 +1431,7 @@ def build_html(member, inbody, goal='체지방감소'):
         _page2(c, member) +
         _page3(c, member) +
         _page4(c, member) +
+        _page4b(c, member) +
         _page5(c, member) +
         _page6(c, member) +
         _page7(c, member) +
