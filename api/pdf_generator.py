@@ -126,139 +126,150 @@ def _calc(member, inbody, goal):
 
 def _css():
     return """
-    @page { size: A4; margin: 12mm 12mm 14mm 12mm; }
+    @page { size: A4; margin: 14mm 16mm 16mm 16mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
-      font-size: 9pt; color: #2a2a2a; background: white; line-height: 1.55;
+      font-size: 10pt; color: #2a2a2a; background: white; line-height: 1.6;
     }
     .page {
       width: 100%; page-break-after: always;
-      min-height: 267mm; display: flex; flex-direction: column;
+      min-height: 247mm; display: flex; flex-direction: column;
+      padding: 0;
     }
     .page:last-child { page-break-after: avoid; }
+    /* 브라우저 미리보기용 여백 */
+    @media screen {
+      body { background: #e8eaed; padding: 10mm; }
+      .page {
+        background: white; margin-bottom: 8mm;
+        padding: 14mm 16mm 16mm 16mm;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        border-radius: 2px;
+      }
+    }
     .ph { /* page header */
       display: flex; justify-content: space-between; align-items: center;
-      padding: 2mm 0 2mm; border-bottom: 0.6pt solid #d0d8e4;
-      margin-bottom: 4mm; font-size: 7pt; color: #7a8898;
+      padding: 2.5mm 0 2.5mm; border-bottom: 0.6pt solid #d0d8e4;
+      margin-bottom: 5mm; font-size: 8pt; color: #7a8898;
     }
     .ph strong { color: #1e3a5f; font-weight: 800; }
     .pf { /* page footer */
-      margin-top: auto; padding-top: 3mm; border-top: 0.4pt solid #d8d4ce;
-      font-size: 6.5pt; color: #9a9488; text-align: center;
+      margin-top: auto; padding-top: 3.5mm; border-top: 0.4pt solid #d8d4ce;
+      font-size: 7pt; color: #9a9488; text-align: center;
     }
     /* ── main header block ── */
     .main-header {
       background: #1e3a5f; color: white;
-      padding: 6mm 8mm; border-radius: 5pt;
+      padding: 7mm 9mm; border-radius: 6pt;
       display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 4mm;
+      margin-bottom: 5mm;
     }
-    .mh-gym { font-size: 7.5pt; color: #a0bcd8; margin-bottom: 1.5mm; letter-spacing: 1px; }
-    .mh-title { font-size: 16pt; font-weight: 900; line-height: 1.2; }
+    .mh-gym { font-size: 8.5pt; color: #a0bcd8; margin-bottom: 2mm; letter-spacing: 1px; }
+    .mh-title { font-size: 20pt; font-weight: 900; line-height: 1.2; }
     .mh-title span { color: #f0a060; }
-    .mh-sub { font-size: 7.5pt; color: #a0bcd8; margin-top: 1.5mm; }
-    .score-val { font-size: 30pt; font-weight: 900; color: #f0a060; line-height: 1; text-align: right; }
-    .score-sub { font-size: 7pt; color: #a0bcd8; text-align: right; margin-top: 1mm; }
+    .mh-sub { font-size: 8.5pt; color: #a0bcd8; margin-top: 2mm; }
+    .score-val { font-size: 34pt; font-weight: 900; color: #f0a060; line-height: 1; text-align: right; }
+    .score-sub { font-size: 8pt; color: #a0bcd8; text-align: right; margin-top: 1.5mm; }
     /* ── section title ── */
-    .sec { font-size: 8pt; font-weight: 900; color: #1e4d7b; border-left: 3pt solid #c0603a;
-           padding-left: 3mm; margin: 4mm 0 2.5mm; letter-spacing: 0.5px; }
+    .sec { font-size: 9.5pt; font-weight: 900; color: #1e4d7b; border-left: 3.5pt solid #c0603a;
+           padding-left: 3.5mm; margin: 5mm 0 3mm; letter-spacing: 0.5px; }
     /* ── stat cards row ── */
-    .stats { display: flex; gap: 2mm; margin-bottom: 3.5mm; }
+    .stats { display: flex; gap: 2.5mm; margin-bottom: 4mm; }
     .stat {
-      flex: 1; background: white; border-top: 2.5pt solid #1e4d7b;
-      border-radius: 4pt; padding: 2.5mm 2mm; text-align: center;
-      box-shadow: 0 1pt 3pt rgba(0,0,0,0.06); border: 0.5pt solid #e8e4de;
+      flex: 1; background: white; border-top: 3pt solid #1e4d7b;
+      border-radius: 5pt; padding: 3mm 2mm; text-align: center;
+      box-shadow: 0 1pt 4pt rgba(0,0,0,0.07); border: 0.6pt solid #e8e4de;
     }
     .stat.alert { border-top-color: #c0603a; }
     .stat.green { border-top-color: #4a7c59; }
-    .stat-v { font-size: 11pt; font-weight: 900; color: #1e4d7b; white-space: nowrap; }
+    .stat-v { font-size: 13pt; font-weight: 900; color: #1e4d7b; white-space: nowrap; }
     .stat.alert .stat-v { color: #c0603a; }
     .stat.green .stat-v { color: #4a7c59; }
-    .stat-l { font-size: 6pt; color: #8a8078; margin-top: 1mm; }
-    .stat-t { font-size: 6pt; color: #c0603a; font-weight: 700; margin-top: 0.5mm; }
+    .stat-l { font-size: 7.5pt; color: #8a8078; margin-top: 1.5mm; }
+    .stat-t { font-size: 7pt; color: #c0603a; font-weight: 700; margin-top: 1mm; }
     /* ── info box ── */
-    .pbox { background: #eef3f9; border: 0.8pt solid #c2d3e5; border-radius: 5pt;
-            padding: 3mm 4mm; font-size: 8pt; line-height: 1.8; margin-bottom: 3.5mm; }
+    .pbox { background: #eef3f9; border: 0.8pt solid #c2d3e5; border-radius: 6pt;
+            padding: 4mm 5mm; font-size: 9pt; line-height: 1.85; margin-bottom: 4mm; }
     .pbox strong { color: #1e4d7b; }
-    .alert-box { background: #fdf0eb; border: 0.8pt solid #e0a080; border-radius: 5pt;
-                 padding: 3mm 4mm; font-size: 8pt; line-height: 1.8; margin-bottom: 3.5mm; }
+    .alert-box { background: #fdf0eb; border: 0.8pt solid #e0a080; border-radius: 6pt;
+                 padding: 4mm 5mm; font-size: 9pt; line-height: 1.85; margin-bottom: 4mm; }
     .alert-box strong { color: #c0603a; }
-    .green-box { background: #eef6f1; border: 0.8pt solid #8abf9a; border-radius: 5pt;
-                 padding: 3mm 4mm; font-size: 8pt; line-height: 1.8; margin-bottom: 3.5mm; }
+    .green-box { background: #eef6f1; border: 0.8pt solid #8abf9a; border-radius: 6pt;
+                 padding: 4mm 5mm; font-size: 9pt; line-height: 1.85; margin-bottom: 4mm; }
     .green-box strong { color: #4a7c59; }
     /* ── goal bars ── */
-    .goal-row { display: flex; align-items: center; gap: 3mm; margin-bottom: 2mm; }
-    .gl { font-size: 7.5pt; color: #5a554e; min-width: 18mm; font-weight: 600; }
-    .gb-wrap { flex: 1; height: 6pt; background: #e2ded8; border-radius: 3pt; overflow: hidden; }
-    .gb { height: 100%; border-radius: 3pt; }
-    .gv { font-size: 7pt; font-weight: 700; color: #1e4d7b; min-width: 52mm; text-align: right; white-space: nowrap; }
+    .goal-row { display: flex; align-items: center; gap: 3mm; margin-bottom: 2.5mm; }
+    .gl { font-size: 8.5pt; color: #5a554e; min-width: 20mm; font-weight: 600; }
+    .gb-wrap { flex: 1; height: 7pt; background: #e2ded8; border-radius: 3.5pt; overflow: hidden; }
+    .gb { height: 100%; border-radius: 3.5pt; }
+    .gv { font-size: 8pt; font-weight: 700; color: #1e4d7b; min-width: 55mm; text-align: right; white-space: nowrap; }
     /* ── weekly schedule table ── */
-    .week-table { width: 100%; border-collapse: collapse; font-size: 7.5pt; margin-bottom: 4mm; }
+    .week-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 5mm; }
     .week-table thead tr { background: #1e3a5f; color: white; }
-    .week-table th { padding: 2.5mm 2mm; text-align: center; font-weight: 700; }
-    .week-table td { padding: 2mm 2.5mm; border-bottom: 0.4pt solid #e8e4de; vertical-align: top; }
+    .week-table th { padding: 3mm 2.5mm; text-align: center; font-weight: 700; }
+    .week-table td { padding: 2.5mm 3mm; border-bottom: 0.4pt solid #e8e4de; vertical-align: top; }
     .week-table tr:nth-child(even) td { background: #f8f7f5; }
     .day-badge { display: inline-block; background: #1e4d7b; color: white; font-weight: 800;
-                 font-size: 7.5pt; padding: 1mm 2.5mm; border-radius: 3pt; }
+                 font-size: 8.5pt; padding: 1mm 3mm; border-radius: 3pt; }
     .day-badge.rest { background: #8a9aaa; }
     .day-badge.opt  { background: #4a7c59; }
     /* ── benefit boxes ── */
-    .benefit-row { display: flex; gap: 3mm; margin-bottom: 4mm; }
-    .benefit { flex: 1; background: #eef3f9; border-radius: 5pt; padding: 3mm; text-align: center;
-               border-top: 2.5pt solid #1e4d7b; }
-    .benefit .b-icon { font-size: 14pt; }
-    .benefit .b-title { font-size: 7.5pt; font-weight: 900; color: #1e3a5f; margin-top: 1.5mm; }
-    .benefit .b-desc  { font-size: 7pt; color: #5a6a7a; margin-top: 1mm; line-height: 1.6; }
+    .benefit-row { display: flex; gap: 3.5mm; margin-bottom: 5mm; }
+    .benefit { flex: 1; background: #eef3f9; border-radius: 6pt; padding: 4mm; text-align: center;
+               border-top: 3pt solid #1e4d7b; }
+    .benefit .b-icon { font-size: 16pt; }
+    .benefit .b-title { font-size: 8.5pt; font-weight: 900; color: #1e3a5f; margin-top: 2mm; }
+    .benefit .b-desc  { font-size: 8pt; color: #5a6a7a; margin-top: 1.5mm; line-height: 1.65; }
     /* ── tool section ── */
-    .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; margin-bottom: 4mm; }
-    .tool-box { background: white; border: 0.6pt solid #e2ded8; border-radius: 5pt; overflow: hidden; }
-    .tool-head { background: #1e4d7b; color: white; padding: 2mm 3.5mm; font-size: 8pt; font-weight: 800; }
-    .tool-body { padding: 2.5mm 3.5mm; }
-    .tool-item { font-size: 7.5pt; padding: 1mm 0; border-bottom: 0.4pt solid #f0ece6; line-height: 1.6; }
+    .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5mm; margin-bottom: 5mm; }
+    .tool-box { background: white; border: 0.6pt solid #e2ded8; border-radius: 6pt; overflow: hidden; }
+    .tool-head { background: #1e4d7b; color: white; padding: 2.5mm 4mm; font-size: 9pt; font-weight: 800; }
+    .tool-body { padding: 3mm 4mm; }
+    .tool-item { font-size: 8.5pt; padding: 1.5mm 0; border-bottom: 0.4pt solid #f0ece6; line-height: 1.65; }
     .tool-item:last-child { border-bottom: none; }
-    .tool-item .num { color: #f0a060; font-weight: 800; margin-right: 1mm; }
+    .tool-item .num { color: #f0a060; font-weight: 800; margin-right: 1.5mm; }
     /* ── exercise cards ── */
-    .ex-col-wrap { display: flex; gap: 4mm; margin-bottom: 4mm; }
+    .ex-col-wrap { display: flex; gap: 4.5mm; margin-bottom: 5mm; }
     .ex-col { flex: 1; }
-    .ex-col-head { background: #1e3a5f; color: white; padding: 2.5mm 4mm; font-size: 9pt; font-weight: 900;
-                   border-radius: 4pt 4pt 0 0; }
-    .ex-card { background: white; border: 0.6pt solid #e2ded8; border-bottom: none; padding: 2.5mm 4mm;
+    .ex-col-head { background: #1e3a5f; color: white; padding: 3mm 4.5mm; font-size: 10pt; font-weight: 900;
+                   border-radius: 5pt 5pt 0 0; }
+    .ex-card { background: white; border: 0.6pt solid #e2ded8; border-bottom: none; padding: 3mm 4.5mm;
                display: flex; gap: 3mm; align-items: flex-start; }
-    .ex-card:last-child { border-bottom: 0.6pt solid #e2ded8; border-radius: 0 0 4pt 4pt; }
+    .ex-card:last-child { border-bottom: 0.6pt solid #e2ded8; border-radius: 0 0 5pt 5pt; }
     .ex-card:nth-child(odd) { background: #fafaf8; }
-    .ex-cat { font-size: 6.5pt; font-weight: 700; padding: 1pt 3pt; border-radius: 2pt;
+    .ex-cat { font-size: 7.5pt; font-weight: 700; padding: 1.5pt 4pt; border-radius: 2pt;
               white-space: nowrap; margin-top: 1pt; }
     .cat-warmup { background: #fdeee8; color: #c0603a; }
     .cat-weight { background: #e8eef6; color: #1e4d7b; }
     .cat-core   { background: #fef5e4; color: #9a6208; }
     .cat-finish { background: #eef6f1; color: #4a7c59; }
-    .ex-name { font-size: 8pt; font-weight: 700; color: #2a2a2a; }
-    .ex-detail { font-size: 7pt; color: #1e4d7b; font-weight: 600; margin-top: 0.5mm; }
-    .ex-alt { font-size: 6.5pt; color: #7a8878; margin-top: 0.5mm; }
+    .ex-name { font-size: 9.5pt; font-weight: 700; color: #2a2a2a; }
+    .ex-detail { font-size: 8pt; color: #1e4d7b; font-weight: 600; margin-top: 1mm; }
+    .ex-alt { font-size: 7.5pt; color: #7a8878; margin-top: 0.8mm; }
     /* ── metric cards ── */
-    .metric-row { display: flex; gap: 3mm; margin-bottom: 4mm; }
-    .metric { flex: 1; background: white; border: 0.6pt solid #e2ded8; border-radius: 5pt;
-              text-align: center; padding: 3mm 2mm; border-top: 3pt solid #1e4d7b; }
+    .metric-row { display: flex; gap: 3.5mm; margin-bottom: 5mm; }
+    .metric { flex: 1; background: white; border: 0.6pt solid #e2ded8; border-radius: 6pt;
+              text-align: center; padding: 4mm 2mm; border-top: 3pt solid #1e4d7b; }
     .metric.orange { border-top-color: #f0a060; }
     .metric.red    { border-top-color: #c0603a; }
     .metric.green  { border-top-color: #4a7c59; }
-    .metric-v { font-size: 13pt; font-weight: 900; color: #1e4d7b; line-height: 1.1; }
+    .metric-v { font-size: 15pt; font-weight: 900; color: #1e4d7b; line-height: 1.1; }
     .metric.orange .metric-v { color: #c07020; }
     .metric.red    .metric-v { color: #c0603a; }
     .metric.green  .metric-v { color: #4a7c59; }
-    .metric-l { font-size: 7pt; color: #7a8078; margin-top: 1.5mm; }
+    .metric-l { font-size: 8pt; color: #7a8078; margin-top: 2mm; }
     /* ── generic table ── */
-    .g-table { width: 100%; border-collapse: collapse; font-size: 7.5pt; margin-bottom: 4mm; }
+    .g-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 5mm; }
     .g-table thead tr { background: #1e3a5f; color: white; }
-    .g-table th { padding: 2.5mm 3mm; text-align: center; font-weight: 700; }
-    .g-table td { padding: 2mm 3mm; border-bottom: 0.4pt solid #e8e4de; vertical-align: middle; }
+    .g-table th { padding: 3mm 3.5mm; text-align: center; font-weight: 700; }
+    .g-table td { padding: 2.5mm 3.5mm; border-bottom: 0.4pt solid #e8e4de; vertical-align: middle; }
     .g-table tr:nth-child(even) td { background: #f8f7f5; }
     .g-table td.center { text-align: center; }
     .g-table td.num { text-align: right; font-weight: 700; color: #1e4d7b; }
     /* ── HR boxes ── */
-    .hr-row { display: flex; gap: 3mm; margin-bottom: 4mm; }
-    .hr-box { flex: 1; border-radius: 5pt; padding: 3mm; text-align: center; }
+    .hr-row { display: flex; gap: 3.5mm; margin-bottom: 5mm; }
+    .hr-box { flex: 1; border-radius: 6pt; padding: 4mm; text-align: center; }
     .hr-box.blue   { background: #eef3f9; border: 1pt solid #c2d3e5; }
     .hr-box.orange { background: #fdf2e8; border: 1pt solid #e8c090; }
     .hr-box.red    { background: #fdf0eb; border: 1pt solid #e0a080; }
